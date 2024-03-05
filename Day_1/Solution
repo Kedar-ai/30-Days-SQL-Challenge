@@ -1,0 +1,18 @@
+
+
+SELECT brand1, brand2, year, custom1, custom2, custom3, custom4
+FROM (
+    SELECT brand1, brand2, year, custom1, custom2, custom3, custom4,
+           ROW_NUMBER() OVER(PARTITION BY 
+               CASE WHEN brand1 < brand2 THEN brand1 || brand2 || year
+                    ELSE brand2 || brand1 || year
+               END
+               ORDER BY brand1, brand2, year
+           ) AS rn
+    FROM brands
+) cte
+WHERE rn = 1 
+   OR (custom1 <> custom3 AND custom2 <> custom4);
+
+
+
